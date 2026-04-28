@@ -1,0 +1,2 @@
+# Humectant Library
+Humectant Library is a multiloader library which provides several utilities for my Minecraft mods. It doesn't do much on its' own, but is required as a dependency for most of my mods.

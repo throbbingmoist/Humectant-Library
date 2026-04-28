@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "humectant",
+  "version": "${version}",
+  "name": "Humectant Library",
+  "description": "Humectant Library is a mod which provides several utilities for my mods. It doesn't do much on its' own, but may be required by other mods as a dependency.",
+  "authors": ["throbbingMoist"],
+  "contact": {
+    "homepage": ""
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/humectant/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "net.moist.humectant.fabric.HumectantFabric"
+    ],
+    "client": [
+      "net.moist.humectant.fabric.client.HumectantFabricClient"
+    ]
+  },
+  "mixins": [
+    "humectant.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "minecraft": "~1.21.1",
+    "java": ">=21"
+    ,"architectury": ">=13.0.8"
+    ,"fabric-api": "*"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
