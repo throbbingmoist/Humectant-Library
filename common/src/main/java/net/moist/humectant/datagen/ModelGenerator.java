@@ -20,21 +20,29 @@ import static net.moist.humectant.Humectant.GSON;
 
 public abstract class ModelGenerator {
 
+	private boolean generatesItem;
+
 	public ModelGenerator(Consumer<BlockStateGenerator> blockStateOutput, BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput, Block block) {
 		this.generateBlock(modelOutput, block);
 		this.generateState(blockStateOutput, block);
+		this.generatesItem = true;
+	}
+
+	public ModelGenerator noParentItem() {
+		this.generatesItem = false;
+		return this;
 	}
 
 	public void generateBlock(BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput, Block block) {
 		HashMap<String, JsonObject> models = this.generateModelJSON(block);
-		JsonObject item = new JsonObject();
-		item.addProperty("parent",block.arch$registryName().getNamespace()+":block/"+block.arch$registryName().getPath());
-
-		modelOutput.accept(ResourceLocation.fromNamespaceAndPath(block.arch$registryName().getNamespace(), "item/"+block.arch$registryName().getPath()), () -> item);
-
+		if (this.generatesItem) {
+			JsonObject item = new JsonObject();
+			item.addProperty("parent",block.arch$registryName().getNamespace()+":block/"+block.arch$registryName().getPath());
+			modelOutput.accept(ResourceLocation.fromNamespaceAndPath(block.arch$registryName().getNamespace(), "item/"+block.arch$registryName().getPath()), () -> item);
+		}
 		for (String key : models.keySet()) {
 			models.get(key).add("display",this.getDisplayTransforms());
-			modelOutput.accept(ResourceLocation.fromNamespaceAndPath(block.arch$registryName().getNamespace(),"block/"+key), () -> models.get(key));
+			modelOutput.accept(ResourceLocation.fromNamespaceAndPath(block.arch$registryName().getNamespace(),key), () -> models.get(key));
 		}
 	}
 	public void generateState(Consumer<BlockStateGenerator> blockStateOutput, Block block) {

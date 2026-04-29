@@ -3,6 +3,7 @@ package net.moist.humectant.datagen;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.data.models.blockstates.BlockStateGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -15,7 +16,7 @@ import java.util.function.Supplier;
 
 import static net.moist.humectant.Humectant.GSON;
 
-public class CatwalkModelGenerator extends ModelGenerator {
+public class OldCatwalkModelGenerator extends ModelGenerator {
 	public static hDirection NORTHWEST;
 	public static hDirection NORTH;
 	public static hDirection NORTHEAST;
@@ -26,7 +27,8 @@ public class CatwalkModelGenerator extends ModelGenerator {
 	public static hDirection WEST;
 
 
-	public CatwalkModelGenerator(Consumer<BlockStateGenerator> blockStateOutput, BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput, Block block) {
+
+	public OldCatwalkModelGenerator(Consumer<BlockStateGenerator> blockStateOutput, BiConsumer<ResourceLocation, Supplier<JsonElement>> modelOutput, Block block) {
 		super(blockStateOutput, modelOutput, block);
 	}
 
@@ -99,16 +101,21 @@ public class CatwalkModelGenerator extends ModelGenerator {
 		textures_floor.addProperty("particle", namespace+":block/"+catwalk_identifier+"_floor");
 		JsonObject textures_frame = new JsonObject();
 		textures_frame.addProperty("frame", namespace+":block/"+catwalk_identifier+"_frame");
+		JsonObject textures_all = new JsonObject();
+		textures_all.addProperty("floor", namespace+":block/"+catwalk_identifier+"_floor");
+		textures_all.addProperty("particle", namespace+":block/"+catwalk_identifier+"_floor");
+		textures_all.addProperty("frame", namespace+":block/"+catwalk_identifier+"_frame");
 
-		models.put(catwalk_identifier,generateCenter(textures_floor));
-		models.put(catwalk_identifier+"_"+NORTH.String,generateNorth(textures_frame));
-		models.put(catwalk_identifier+"_"+NORTHEAST.String,generateNorthEast(textures_frame));
-		models.put(catwalk_identifier+"_"+EAST.String,generateEast(textures_frame));
-		models.put(catwalk_identifier+"_"+SOUTHEAST.String,generateSouthEast(textures_frame));
-		models.put(catwalk_identifier+"_"+SOUTH.String,generateSouth(textures_frame));
-		models.put(catwalk_identifier+"_"+SOUTHWEST.String,generateSouthWest(textures_frame));
-		models.put(catwalk_identifier+"_"+WEST.String,generateWest(textures_frame));
-		models.put(catwalk_identifier+"_"+NORTHWEST.String,generateNorthWest(textures_frame));
+		models.put("block/"+catwalk_identifier,generateCenter(textures_floor));
+		models.put("block/"+catwalk_identifier+"_"+NORTH.String,generateNorth(textures_frame));
+		models.put("block/"+catwalk_identifier+"_"+NORTHEAST.String,generateNorthEast(textures_frame));
+		models.put("block/"+catwalk_identifier+"_"+EAST.String,generateEast(textures_frame));
+		models.put("block/"+catwalk_identifier+"_"+SOUTHEAST.String,generateSouthEast(textures_frame));
+		models.put("block/"+catwalk_identifier+"_"+SOUTH.String,generateSouth(textures_frame));
+		models.put("block/"+catwalk_identifier+"_"+SOUTHWEST.String,generateSouthWest(textures_frame));
+		models.put("block/"+catwalk_identifier+"_"+WEST.String,generateWest(textures_frame));
+		models.put("block/"+catwalk_identifier+"_"+NORTHWEST.String,generateNorthWest(textures_frame));
+		models.put("item/"+catwalk_identifier,generateItem(textures_all));
 		return models;
 	}
 
@@ -128,6 +135,8 @@ public class CatwalkModelGenerator extends ModelGenerator {
 		JsonObject model = new JsonObject(); JsonArray elements = new JsonArray(); JsonObject element = new JsonObject(); JsonObject faces = new JsonObject(); JsonObject face;
 		element.add("from", GSON.toJsonTree(new double[]{0, 14, 0}).getAsJsonArray());
 		element.add("to", GSON.toJsonTree(new double[]{16, 16, 16}).getAsJsonArray());
+
+		model.addProperty("render_type", RenderType.cutoutMipped().toString());
 
 		face = new JsonObject();face.add("uv", GSON.toJsonTree(new int[]{0, 0, 16, 16}).getAsJsonArray());
 		face.addProperty("rotation", 0); face.addProperty("texture", "#floor");
@@ -331,6 +340,23 @@ public class CatwalkModelGenerator extends ModelGenerator {
 		faces.add("down",face);
 
 		element.add("faces", faces); elements.add(element); model.add("textures",textures); model.add("elements",elements);
+		return model;
+	}
+
+	public static JsonObject generateItem(JsonObject textures) {
+		JsonObject model = new JsonObject(); JsonArray elements = new JsonArray();
+
+		elements.add(generateCenter(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateNorthWest(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateNorth(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateNorthEast(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateEast(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateSouthEast(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateSouth(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateSouthWest(textures).get("elements").getAsJsonArray().get(0));
+		elements.add(generateWest(textures).get("elements").getAsJsonArray().get(0));
+
+		model.add("textures",textures); model.add("elements",elements);
 		return model;
 	}
 }

@@ -1,6 +1,8 @@
 package net.moist.humectant.block;
 
 import com.mojang.serialization.MapCodec;
+import dev.architectury.registry.client.rendering.RenderTypeRegistry;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -14,21 +16,23 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.moist.humectant.datagen.CatwalkModelGenerator;
+import net.moist.humectant.datagen.OldCatwalkModelGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class CatwalkBlock extends Block {
-	private static final MapCodec<CatwalkBlock> CODEC;
+public class OldCatwalkBlock extends Block {
+	private static final MapCodec<OldCatwalkBlock> CODEC;
 	private static final BooleanProperty NORTH;
 	private static final BooleanProperty EAST;
 	private static final BooleanProperty SOUTH;
 	private static final BooleanProperty WEST;
 
-	public CatwalkBlock(Properties properties) {
+	public OldCatwalkBlock(Properties properties) {
 		super(properties);
 		super.registerDefaultState(this.getStateDefinition().any().setValue(NORTH, true).setValue(EAST, true).setValue(SOUTH, true).setValue(WEST, true));
+		RenderTypeRegistry.register(RenderType.translucent(), this);
 	}
+
 	protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
 		builder.add(NORTH).add(EAST).add(SOUTH).add(WEST);
 	}
@@ -51,10 +55,10 @@ public class CatwalkBlock extends Block {
 	protected boolean propagatesSkylightDown(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {return true;}
 
 	static {
-		CODEC = simpleCodec(CatwalkBlock::new);
-		NORTH = CatwalkModelGenerator.NORTH.Property;
-		EAST = CatwalkModelGenerator.EAST.Property;
-		SOUTH = CatwalkModelGenerator.SOUTH.Property;
-		WEST = CatwalkModelGenerator.WEST.Property;
+		CODEC = simpleCodec(OldCatwalkBlock::new);
+		NORTH = OldCatwalkModelGenerator.NORTH.Property;
+		EAST = OldCatwalkModelGenerator.EAST.Property;
+		SOUTH = OldCatwalkModelGenerator.SOUTH.Property;
+		WEST = OldCatwalkModelGenerator.WEST.Property;
 	}
 }
