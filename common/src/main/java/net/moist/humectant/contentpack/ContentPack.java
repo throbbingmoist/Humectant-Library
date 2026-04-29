@@ -17,6 +17,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
+@Deprecated
 public class ContentPack {
 	private static final DeferredRegister<CreativeModeTab> TABS = DeferredRegister.create(Humectant.MOD_ID, Registries.CREATIVE_MODE_TAB);
 	public @Nullable
